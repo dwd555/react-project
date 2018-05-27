@@ -1,21 +1,28 @@
 import React, { Component } from 'react';
 import { Table, Icon, Divider ,Button,Modal,DatePicker,Input,Form,Row, Col } from 'antd';
+import { connect } from 'react-redux';
+import {init} from '../../store/Cashbook/action'
+import PropTypes from 'prop-types';
+import axios from 'axios';
 const FormItem = Form.Item
-class Second extends Component {
+class Cashbook extends Component {
+	static propTypes={
+		init:PropTypes.func.isRequired
+	}
 	constructor(props){
 		super(props);
 		this.columns = [{
-			  title: '日期',
-			  dataIndex: 'date',
-			  key: 'date',
+			  title: '书名',
+			  dataIndex: 'name',
+			  key: 'name',
 			}, {
-			  title: '地点',
-			  dataIndex: 'address',
-			  key: 'address',
+			  title: '作者',
+			  dataIndex: 'author',
+			  key: 'author',
 			},{
-			  title: '金额',
-			  dataIndex: 'pay',
-			  key: 'pay',
+			  title: '出版社',
+			  dataIndex: 'publish',
+			  key: 'publish',
 			}, {
 			  title: '操作',
 			  key: 'action',
@@ -28,22 +35,22 @@ class Second extends Component {
 			  ),
 			}];
 		this.state={
-			data:[{
-			  key: '0',
-			  date:'2018-03-27',
-			  address:'岭南站',
-			  pay: '100',
-			},{
-			  key: '1',
-			  date:'2018-03-27',
-			  address:'岭南站',
-			  pay: '200',
-			}, {
-			  key: '2',
-			  date:'2018-03-27',
-			  address:'岭南站',
-			  pay: '300',
-			}],
+			// data:[{
+			//   key: '0',
+			//   date:'2018-03-27',
+			//   address:'岭南站',
+			//   pay: '100',
+			// },{
+			//   key: '1',
+			//   date:'2018-03-27',
+			//   address:'岭南站',
+			//   pay: '200',
+			// }, {
+			//   key: '2',
+			//   date:'2018-03-27',
+			//   address:'岭南站',
+			//   pay: '300',
+			// }],
 			count:3,
 			visible:false,
 			confirmLoading:false,
@@ -99,11 +106,35 @@ class Second extends Component {
 				})
 			}
 		}
+		componentDidMount(){
+			let url="http://127.0.0.1/book-vue/static/data/booklist.php"
+			let that=this
+			axios.get(url).then(function(res){
+				console.log(res.data);
+				var arr=[]
+				for(let i=0;i<res.data.length;i++){
+					// console.log(res.data)
+					arr.push({key:res.data[i].bid,name:res.data[i].name,author:res.data[i].author,publish:res.data[i].publish})
+				}
+				console.log(arr)
+				that.props.init(arr)
+			}).catch(function(err){
+				console.log(err);
+			})
+			// this.props.init([{
+			//     date:'2018-03-27',
+			//     address:'岭南站',
+			//     pay: '300',
+			// }])
+			// console.log(this.props)
+			// console.log(init)
+		}
+		// <Table columns={this.columns} dataSource={this.state.data} />
   render() {
     return (
     	<div>
      <Button type="primary" onClick={()=>this.showModal()} icon="file-add" size={'large'}>添加记录</Button>
-     <Table columns={this.columns} dataSource={this.state.data} />
+		 <Table columns={this.columns} dataSource={this.props.cashdata} />
      <Modal title="添加记录" okText="确定" cancelText="取消"
           visible={this.state.visible}
           onOk={()=>this.handleOk()}
@@ -152,4 +183,9 @@ class Second extends Component {
   }
 }
 
-export default Second;
+// export default Cashbook;
+export default connect(state=>({
+	cashdata:state.cashData
+}),{
+	init
+})(Cashbook);

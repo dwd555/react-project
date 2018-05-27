@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Menu, Icon,Row, Col } from 'antd';
 import Todo from './Todo.js';
-import Second from './Second';
+import Cashbook from './Cashbook';
 import {Route,Switch,Link,Redirect} from 'react-router-dom';
 const { Header, Content, Footer, Sider} = Layout;
 class Home extends Component {
@@ -42,15 +42,15 @@ class Home extends Component {
     >
       <div className="logo" />
       <Menu theme="dark" mode="inline" defaultSelectedKeys={this.state.defaultKey}>
-      
+
         <Menu.Item key="1">
         <Link to="/home/todo">
           <Icon type="user" />
-          
+
           <span className="nav-text">todo</span>
           </Link>
         </Menu.Item>
-        
+
         <Menu.Item key="2">
           <Link to="/home/cashbook">
           	<Icon type="video-camera" />
@@ -99,7 +99,7 @@ class Home extends Component {
 
         <Switch>
         	<Route exact path="/home/todo" component={Todo} />
-        	<Route exact path="/home/cashbook" component={Second} />
+        	<Route exact path="/home/cashbook" component={Cashbook} />
         	<Redirect from='/home' to='/home/todo' />
         </Switch>
       </Content>
